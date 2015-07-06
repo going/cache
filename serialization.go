@@ -14,7 +14,7 @@ import (
 	"reflect"
 	"strconv"
 
-	log "appcoachs.net/x/log"
+	log "github.com/golang/glog"
 )
 
 // Serialize transforms the given value into bytes following these rules:
