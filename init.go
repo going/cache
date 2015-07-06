@@ -23,8 +23,8 @@ var (
 
 func init() {
 
-	flag.StringVar(&redisHost, "host", "127.0.0.1:6379", "redis host")
-	flag.StringVar(&redisPasswd, "password", "", "redis password")
+	flag.StringVar(&redisHost, "redis_host", "127.0.0.1:6379", "redis host")
+	flag.StringVar(&redisPasswd, "redis_passwd", "", "redis password")
 
 	once.Do(initializing)
 }
