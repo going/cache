@@ -161,23 +161,20 @@ func (c RedisCache) Increment(key string, delta uint64) (uint64, error) {
 	// redis will auto create the key, and we don't want that. Since we need to do increment
 	// ourselves instead of natively via INCRBY (redis doesn't support wrapping), we get the value
 	// and do the exists check this way to minimize calls to Redis
-	val, err := conn.Do("GET", key)
+	existed, err := exists(conn, key)
 	if err != nil {
 		return 0, err
-	} else if val == nil {
+	} else if !existed {
 		return 0, ErrCacheMiss
 	}
-	currentVal, err := redis.Int64(val, nil)
+
+	val, err := redis.Int64(conn.Do("INCRBY", key, delta))
 	if err != nil {
 		return 0, err
 	}
-	var sum int64 = currentVal + int64(delta)
-	_, err = conn.Do("SET", key, sum)
-	if err != nil {
-		return 0, err
-	}
-	return uint64(sum), nil
+	return uint64(val), nil
 }
+
 
 func (c RedisCache) Decrement(key string, delta uint64) (newValue uint64, err error) {
 	conn := c.pool.Get()
